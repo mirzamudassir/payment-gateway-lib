@@ -1,1 +1,52 @@
-<!-- payment form -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Form</title>
+</head>
+<body>
+  <h1>Payment Form</h1>
+  <form action="" method="post">
+    <div>
+      <label for="price">Price:</label>
+      <input type="text" id="price" name="price" required>
+    </div>
+    <div>
+      <label for="currency">Currency:</label>
+      <select id="currency" name="currency" required>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="THB">THB</option>
+        <option value="HKD">HKD</option>
+        <option value="SGD">SGD</option>
+        <option value="AUD">AUD</option>
+      </select>
+    </div>
+    <div>
+      <label for="fullName">Customer Full Name:</label>
+      <input type="text" id="fullName" name="fullName" required>
+    </div>
+    <h2>Payment Information</h2>
+    <div>
+      <label for="cardHolderName">Card Holder Name:</label>
+      <input type="text" id="cardHolderName" name="cardHolderName" required>
+    </div>
+    <div>
+      <label for="cardNumber">Card Number:</label>
+      <input type="text" id="cardNumber" name="cardNumber" required>
+    </div>
+    <div>
+      <label for="cardExpiration">Card Expiration:</label>
+      <input type="text" id="cardExpiration" name="cardExpiration" placeholder="MM/YYYY" required>
+    </div>
+    <div>
+      <label for="cardCvv">Card CVV:</label>
+      <input type="text" id="cardCvv" name="cardCvv" required>
+    </div>
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</body>
+</html>
