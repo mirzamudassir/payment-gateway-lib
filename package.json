@@ -1,0 +1,12 @@
+{
+  "name": "payment-gateway-lib",
+  "version": "1.0.0",
+  "description": "Payment gateway library with express.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mudassir Mirza",
+  "emai": "hi@mudasir.net",
+  "license": "ISC"
+}
