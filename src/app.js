@@ -288,9 +288,10 @@ async function usePayPalPayment(req, pgRes) {
       createOrderResponse.id
     );
 
+    console.log('what is this ssssssssssss>>>>', captureOrderResponse)
     // Respond with the capture response
     pgRes.status(200);
-    pgRes.send(captureOrderResponse.status);
+    pgRes.send(captureOrderResponse ? captureOrderResponse.status : captureOrderResponse.name);
   } catch (error) {
     console.error("Failed to process payment with PayPal:", error);
     pgRes.status(500).json({ error: "Failed to process payment with PayPal." });
@@ -323,13 +324,15 @@ async function useBraintreePayment(brreq, pgRess) {
 /**
  * server
  */
-app.listen(port, () => {
-  console.log(`server listening at http://localhost:${port}/`);
+const server = app.listen(3000, () => {
+  console.log('Server is running on port 3000');
 });
+
 
 // export modules for test cases
 module.exports = {
   app,
+  server,
   usePayPalPayment,
   useBraintreePayment,
 };

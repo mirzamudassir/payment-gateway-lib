@@ -1,6 +1,6 @@
 const request = require("supertest");
 const express = require("express");
-const { app } = require("../app");
+const { app, server } = require("../app");
 
 const { usePayPalPayment, useBraintreePayment } = require("../app");
 
@@ -27,16 +27,24 @@ describe("Payment Gateway Tests", () => {
 
   // Mock response for fetch
   const mockFetchResponse = {
-    json: jest.fn().mockResolvedValue({ status: "COMPLETED" }),
+    json: jest
+      .fn()
+      .mockResolvedValueOnce({ status: "COMPLETED" }) // for paypal payment
+      .mockResolvedValueOnce({ status: "submitted_for_settlement" }), //for braintree payment
     status: 200,
   };
 
   // Mock fetch function
-  global.fetch = jest.fn().mockResolvedValue(mockFetchResponse);
+  //   global.fetch = jest.fn().mockResolvedValue(mockFetchResponse);
 
   // Clear mock data and reset mock functions before each test
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  // After all tests are done, close the server
+  afterAll(() => {
+    server.close();
   });
 
   // Test usePayPalPayment method
