@@ -1,128 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Form</title>
-  <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Form</title>
+    <!-- include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- include BlockUI -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
 
-    form {
-      max-width: 400px;
-      width: 100%;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+      form {
+        max-width: 400px;
+        width: 100%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
 
-    div {
-      margin-bottom: 15px;
-    }
+      div {
+        margin-bottom: 15px;
+      }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-    }
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
 
-    input,
-    select {
-      width: 100%;
-      padding: 10px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
 
-    button {
-      background-color: #4caf50;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
 
-    #message {
-      text-align: center;
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <form id="paymentForm" action="/api/payment" method="post">
-    <div>
-      <label for="amount">Price:</label>
-      <input type="text" id="amount" name="amount" required>
-    </div>
-    <div>
-      <label for="currency_code">Currency:</label>
-      <select id="currency_code" name="currency_code" required>
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="THB">THB</option>
-        <option value="HKD">HKD</option>
-        <option value="SGD">SGD</option>
-        <option value="AUD">AUD</option>
-      </select>
-    </div>
-    <div>
-      <label for="fullName">Customer Full Name:</label>
-      <input type="text" id="fullName" name="fullName" required>
-    </div>
-    <h2>Payment Information</h2>
-    <div>
-      <label for="cardName">Card Holder Name:</label>
-      <input type="text" id="cardName" name="cardName" required>
-    </div>
-    <div>
-      <label for="cardNumber">Card Number:</label>
-      <input type="text" id="cardNumber" name="cardNumber" required>
-    </div>
-    <div>
-      <label for="cardExpiry">Card Expiration:</label>
-      <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YYYY" required>
-    </div>
-    <div>
-      <label for="cardCvv">CVV:</label>
-      <input type="text" id="cardCvv" name="cardCvv" required>
-    </div>
-    <div>
-      <button type="submit" onclick="submitForm()">Submit</button>
-    </div>
-  </form>
+      #message {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="paymentForm">
+      <div>
+        <label for="amount">Price:</label>
+        <input type="text" id="amount" name="amount" required />
+      </div>
+      <div>
+        <label for="currency_code">Currency:</label>
+        <select id="currency_code" name="currency_code" required>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="THB">THB</option>
+          <option value="HKD">HKD</option>
+          <option value="SGD">SGD</option>
+          <option value="AUD">AUD</option>
+        </select>
+      </div>
+      <div>
+        <label for="fullName">Customer Full Name:</label>
+        <input type="text" id="fullName" name="fullName" required />
+      </div>
+      <h2>Payment Information</h2>
+      <div>
+        <label for="cardName">Card Holder Name:</label>
+        <input type="text" id="cardName" name="cardName" required />
+      </div>
+      <div>
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" id="cardNumber" name="cardNumber" required />
+      </div>
+      <div>
+        <label for="cardExpiry">Card Expiration:</label>
+        <input
+          type="text"
+          id="cardExpiry"
+          name="cardExpiry"
+          placeholder="MM/YYYY"
+          required
+        />
+      </div>
+      <div>
+        <label for="cardCvv">CVV:</label>
+        <input
+          type="text"
+          max="3"
+          min="1"
+          id="cardCvv"
+          name="cardCvv"
+          required
+        />
+      </div>
+      <div>
+        <button type="button" onclick="paymentCallback()" id="makePayment">
+          Submit
+        </button>
+      </div>
+    </form>
 
-  <div id="message"></div>
+    <div id="message"></div>
 
-  <script>
-    function submitForm(event) {
-        event.preventDefault(); // Prevent the default form submission
+    <script>
+      function paymentCallback() {
+        var formData = $("#paymentForm").serializeArray();
+        console.log(formData);
 
-        // Get form data
-        var formData = new FormData(document.getElementById('paymentForm'));
+        if (validateForm(formData)) {
+          var apiUrl = "/api/payment";
+          $.ajax({
+            url: apiUrl,
+            type: "POST",
+            data: formData,
+            success: function (data) {
+              displayMessage(data);
+            },
+            error: function (xhr, status, error) {
+              console.error("Error fetching services:", error);
+              displayMessage(xhr.responseText);
+            },
+          });
+        } else {
+          displayMessage("Please fill the required data.");
+        }
+      }
 
-        // Make an AJAX request to the endpoint
-        fetch('/api/payment', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Display the response message
-            document.getElementById('message').innerText = data.message;
-        })
-        .catch(error => {
-            console.error('Error:', error);
+      function validateForm(formData) {
+        // Add the names of the required fields in your form
+        var requiredFields = [
+          "amount",
+          "currency_code",
+          "fullName",
+          "cardName",
+          "cardNumber",
+          "cardExpiry",
+          "cardCvv",
+        ];
+
+        for (var i = 0; i < requiredFields.length; i++) {
+          var fieldName = requiredFields[i];
+          var fieldValue = formData.find(
+            (item) => item.name === fieldName
+          ).value;
+
+          // Check if the field value is empty
+          if (!fieldValue || fieldValue.trim() === "") {
+            return false; // Return false if any required field is empty
+          }
+        }
+
+        return true; // All required fields are filled
+      }
+
+      function displayMessage(message) {
+        $("#message").fadeIn();
+        $("#message").text(message);
+      }
+
+      // Block UI on ajaxStart
+      $(document).ajaxStart(function () {
+        $.blockUI({
+          css: {
+            border: "none",
+            padding: "15px",
+            backgroundColor: "#000",
+            "-webkit-border-radius": "10px",
+            "-moz-border-radius": "10px",
+            opacity: 0.5,
+            color: "#fff",
+          },
+          message: "Please wait...", // Optional message while blocking
         });
-    }
-</script>
-  
-  
-</body>
+      });
+
+      // Unblock UI on ajaxStop
+      $(document).ajaxStop(function () {
+        $.unblockUI();
+      });
+    </script>
+  </body>
 </html>

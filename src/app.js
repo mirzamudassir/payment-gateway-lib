@@ -61,16 +61,19 @@ async function brainTreePayment(orderDetails) {
     });
 
     const jsonResponse = {
-      status: braintreeResult.transaction.status,
+      status:
+        braintreeResult.transaction && braintreeResult.transaction.status
+          ? braintreeResult.transaction.status
+          : braintreeResult.message,
     };
-
-    console.log("here it is?>>>>>>>>>>", jsonResponse.status);
 
     return {
       jsonResponse,
       httpStatusCode: 200,
     };
   } catch (error) {
+    const jsonResponse = { status: error.message };
+
     return {
       jsonResponse,
       httpStatusCode: 500,
@@ -171,6 +174,8 @@ async function approvePaymentSource(orderId, orderDetails) {
     body: JSON.stringify(payload),
   });
 
+  console.log("kkkkkkkkkkkk", response);
+
   return handleResponse(response);
 }
 
@@ -197,6 +202,7 @@ async function captureOrder(orderId) {
 async function handleResponse(response) {
   try {
     const jsonResponse = await response.json();
+    console.log("OOOOOOOOOOOOO", jsonResponse);
     return {
       jsonResponse,
       httpStatusCode: response.status,
@@ -244,11 +250,13 @@ app.post("/api/payment", async (req, res) => {
       }
     } catch (error) {
       console.error("Failed to process payment:", error);
-      res.status(500).json({ error: "Failed to process payment." });
+      res.status(500);
+      res.send(`Failed to process payment: ${error}`);
     }
   } catch (error) {
     console.error("Failed to create order:", error);
-    res.status(500).json({ error: "Failed to create order." });
+    res.status(500);
+    res.send(`Failed to create order: ${error}`);
   }
 });
 
@@ -277,6 +285,8 @@ async function usePayPalPayment(req, pgRes) {
       orderDetails
     );
 
+    console.log("dddddddddssssss", createOrderResponse);
+
     // Step 2: Approve payment source
     const { jsonResponse: approvePaymentResponse } = await approvePaymentSource(
       createOrderResponse.id,
@@ -288,13 +298,19 @@ async function usePayPalPayment(req, pgRes) {
       createOrderResponse.id
     );
 
-    console.log('what is this ssssssssssss>>>>', captureOrderResponse)
     // Respond with the capture response
     pgRes.status(200);
-    pgRes.send(captureOrderResponse ? captureOrderResponse.status : captureOrderResponse.name);
+    pgRes.send(
+      `PayPal Payment: ${
+        captureOrderResponse && captureOrderResponse.status
+          ? captureOrderResponse.status
+          : captureOrderResponse.message
+      }`
+    );
   } catch (error) {
     console.error("Failed to process payment with PayPal:", error);
-    pgRes.status(500).json({ error: "Failed to process payment with PayPal." });
+    pgRes.status(500);
+    pgRes.send(`Failed to process payment with PayPal: ${error}`);
   }
 }
 
@@ -308,16 +324,14 @@ async function useBraintreePayment(brreq, pgRess) {
     const { jsonResponse: braintreePaymentResponse } = await brainTreePayment(
       orderDetails
     );
-    
+
     // Respond with the capture response
     pgRess.status(200);
-    pgRess.send(braintreePaymentResponse.status);
-
+    pgRess.send(`Braintree Payment: ${braintreePaymentResponse.status}`);
   } catch (error) {
     console.error("Failed to process payment with Braintree:", error);
-    pgRess
-      .status(500)
-      .json({ error: "Failed to process payment with Braintree." });
+    pgRess.status(500);
+    pgRess.send(`Failed to process payment with Braintree: ${error}`);
   }
 }
 
@@ -325,9 +339,8 @@ async function useBraintreePayment(brreq, pgRess) {
  * server
  */
 const server = app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+  console.log("Server is running on port 3000");
 });
-
 
 // export modules for test cases
 module.exports = {

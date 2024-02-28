@@ -18,5 +18,8 @@ Payment gateway library with express.js
 
 ## References
 
-1. Follow this document for Cards testing details
+1. Follow this document for Cards testing against PayPal
    `https://developer.paypal.com/tools/sandbox/card-testing/`
+
+2. Follow this document for Cards testing against Braintree
+   `https://developer.paypal.com/braintree/docs/reference/general/testing/node` 
