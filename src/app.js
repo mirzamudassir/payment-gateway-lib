@@ -12,11 +12,6 @@ require("dotenv").config();
 const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 const paypalClientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-// const PAYPAL_CLIENT_ID =
-// "AaUNAIE0Etx6fGKLNFqjegei4k-OxzrnF1ZSPmQGC7DqJhj0lWiN-oTvqzmqlPoJAp2_xKIP3o9gPHju";
-// const PAYPAL_CLIENT_SECRET =
-// "EK-WFIzd_8tIcT3NNUFS11QViLyt4NCj6hR5Z7JFWuwpCchH2-L66X8Dl7l-bYKGcp5k3-JAkc6HnWqU";
-
 // define the paypal api base url
 const paypalApiBaseUrl = "https://api-m.sandbox.paypal.com";
 
@@ -30,9 +25,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Configure Braintree Payment Gateway Instance
 const braintreeGatewayInstance = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
-  merchantId: "589rst5qbwq8chkx",
-  publicKey: "xs9jthv6zqpnbhzt",
-  privateKey: "38e33f5ff896c7e91dc7c01cf6814c75",
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY,
 });
 
 ////////////////////////////////////////////////////////////////////////
@@ -60,6 +55,7 @@ async function brainTreePayment(orderDetails) {
       options: { submitForSettlement: true },
     });
 
+    //format the response
     const jsonResponse = {
       status:
         braintreeResult.transaction && braintreeResult.transaction.status
@@ -174,8 +170,6 @@ async function approvePaymentSource(orderId, orderDetails) {
     body: JSON.stringify(payload),
   });
 
-  console.log("kkkkkkkkkkkk", response);
-
   return handleResponse(response);
 }
 
@@ -202,7 +196,7 @@ async function captureOrder(orderId) {
 async function handleResponse(response) {
   try {
     const jsonResponse = await response.json();
-    console.log("OOOOOOOOOOOOO", jsonResponse);
+
     return {
       jsonResponse,
       httpStatusCode: response.status,
@@ -219,11 +213,11 @@ async function handleResponse(response) {
 
 /**
  * Route for payment processing
+ * To use another payment gateway, use the defined helper method here
  */
 app.post("/api/payment", async (req, res) => {
   try {
     const orderDetails = req.body;
-    console.log(">>>>>>>>>>>>>>>>", req.body);
 
     // Check if cardNumber starts with '3' (indicating AMEX) in order to use paypal
     const isAmex = orderDetails.cardNumber.startsWith("3");
@@ -269,6 +263,10 @@ app.get("/", (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////
 /////////////////////// Helper Methods /////////////////////////////////
+//
+// To add more payment gateways, include/write the implementation and 
+// define the helpder method here.                                     
+//
 ////////////////////////////////////////////////////////////////////////
 
 /**
@@ -278,14 +276,11 @@ async function usePayPalPayment(req, pgRes) {
   try {
     console.log(">>>>>>>>>>>>>>>>>>> using paypal payment");
     const orderDetails = req.body;
-    console.log(">>>>>>>>>>>>>>>>", req.body);
 
     // Step 1: Create order
     const { jsonResponse: createOrderResponse } = await createOrder(
       orderDetails
     );
-
-    console.log("dddddddddssssss", createOrderResponse);
 
     // Step 2: Approve payment source
     const { jsonResponse: approvePaymentResponse } = await approvePaymentSource(

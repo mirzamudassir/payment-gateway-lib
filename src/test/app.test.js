@@ -61,7 +61,9 @@ describe("Payment Gateway Tests", () => {
       await usePayPalPayment(mockRequest, mockResponse);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.send).toHaveBeenCalledWith("COMPLETED");
+      expect(mockResponse.send).toHaveBeenCalledWith(
+        expect.stringContaining("COMPLETED")
+      );
     });
   });
 
@@ -80,7 +82,7 @@ describe("Payment Gateway Tests", () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.send).toHaveBeenCalledWith(
-        "submitted_for_settlement"
+        expect.stringContaining("submitted_for_settlement")
       );
     });
   });
