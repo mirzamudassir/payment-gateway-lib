@@ -4,17 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Form</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    form {
+      max-width: 400px;
+      width: 100%;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    div {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Payment Form</h1>
-  <form action="" method="post">
+  <form id="paymentForm" action="/api/payment" method="post">
     <div>
-      <label for="price">Price:</label>
-      <input type="text" id="price" name="price" required>
+      <label for="amount">Price:</label>
+      <input type="text" id="amount" name="amount" required>
     </div>
     <div>
-      <label for="currency">Currency:</label>
-      <select id="currency" name="currency" required>
+      <label for="currency_code">Currency:</label>
+      <select id="currency_code" name="currency_code" required>
         <option value="USD">USD</option>
         <option value="EUR">EUR</option>
         <option value="THB">THB</option>
@@ -29,24 +78,57 @@
     </div>
     <h2>Payment Information</h2>
     <div>
-      <label for="cardHolderName">Card Holder Name:</label>
-      <input type="text" id="cardHolderName" name="cardHolderName" required>
+      <label for="cardName">Card Holder Name:</label>
+      <input type="text" id="cardName" name="cardName" required>
     </div>
     <div>
       <label for="cardNumber">Card Number:</label>
       <input type="text" id="cardNumber" name="cardNumber" required>
     </div>
     <div>
-      <label for="cardExpiration">Card Expiration:</label>
-      <input type="text" id="cardExpiration" name="cardExpiration" placeholder="MM/YYYY" required>
+      <label for="cardExpiry">Card Expiration:</label>
+      <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YYYY" required>
     </div>
     <div>
-      <label for="cardCvv">Card CVV:</label>
+      <label for="cardCvv">CVV:</label>
       <input type="text" id="cardCvv" name="cardCvv" required>
     </div>
     <div>
-      <button type="submit">Submit</button>
+      <button type="submit" onclick="submitForm()">Submit</button>
     </div>
   </form>
+
+  <div id="message"></div>
+
+  <script>
+    function submitForm() {
+      var form = document.getElementById("paymentForm");
+      var formData = new FormData(form);
+  
+      fetch("/api/payment", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          showMessage(data.message);
+        })
+        .catch((error) => {
+          showMessage(`An error occurred: ${error.message}`);
+          console.error("Error:", error);
+        });
+    }
+  
+    function showMessage(message) {
+      alert(message);
+    }
+  </script>
+  
+  
 </body>
 </html>
