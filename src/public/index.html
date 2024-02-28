@@ -127,7 +127,6 @@
     <script>
       function paymentCallback() {
         var formData = $("#paymentForm").serializeArray();
-        console.log(formData);
 
         if (validateForm(formData)) {
           var apiUrl = "/api/payment";
