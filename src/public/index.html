@@ -101,33 +101,27 @@
   <div id="message"></div>
 
   <script>
-    function submitForm() {
-      var form = document.getElementById("paymentForm");
-      var formData = new FormData(form);
-  
-      fetch("/api/payment", {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
+    function submitForm(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get form data
+        var formData = new FormData(document.getElementById('paymentForm'));
+
+        // Make an AJAX request to the endpoint
+        fetch('/api/payment', {
+            method: 'POST',
+            body: formData
         })
-        .then((data) => {
-          showMessage(data.message);
+        .then(response => response.json())
+        .then(data => {
+            // Display the response message
+            document.getElementById('message').innerText = data.message;
         })
-        .catch((error) => {
-          showMessage(`An error occurred: ${error.message}`);
-          console.error("Error:", error);
+        .catch(error => {
+            console.error('Error:', error);
         });
     }
-  
-    function showMessage(message) {
-      alert(message);
-    }
-  </script>
+</script>
   
   
 </body>
