@@ -329,9 +329,7 @@ app.listen(port, () => {
 
 // export modules for test cases
 module.exports = {
-  createOrder,
-  approvePaymentSource,
-  captureOrder,
+  app,
   usePayPalPayment,
   useBraintreePayment,
 };

@@ -14,6 +14,8 @@ Payment gateway library with express.js
 
 3. `npm run dev`
 
+3. `npm run test`
+
 ## References
 
 1. Follow this document for Cards testing details
