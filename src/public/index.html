@@ -144,12 +144,21 @@
             },
           });
         } else {
-          displayMessage("Please fill the required data.");
+          displayMessage("Please fill the required data correctly.");
         }
       }
 
+      // method to display the message
+      function displayMessage(message) {
+        $("#message").fadeIn();
+        $("#message").text(message);
+      }
+
+      /**
+       * Method to validate form inputs accordig to rules
+       *
+       * **/
       function validateForm(formData) {
-        // Add the names of the required fields in your form
         var requiredFields = [
           "amount",
           "currency_code",
@@ -170,15 +179,49 @@
           if (!fieldValue || fieldValue.trim() === "") {
             return false; // Return false if any required field is empty
           }
+
+          // Validate based on field name
+          switch (fieldName) {
+            case "amount":
+              // Check if it is numeric and not more than 10 digits
+              if (!/^\d{1,10}$/.test(fieldValue)) {
+                return false;
+              }
+              break;
+            case "fullName":
+            case "cardName":
+              // Check if it is text and not more than 30 characters
+              if (!/^[a-zA-Z\s]{1,30}$/.test(fieldValue)) {
+                return false;
+              }
+              break;
+            case "cardNumber":
+              // Check if it is numeric and has 16 digits
+              if (!/^\d{16}$/.test(fieldValue)) {
+                return false;
+              }
+              break;
+            case "cardExpiry":
+              // Check if it is a varchar having 7 length not less than 7
+              if (!/^.{7,}$/.test(fieldValue)) {
+                return false;
+              }
+              break;
+            case "cardCvv":
+              // Check if it is numeric and has 3 digits
+              if (!/^\d{3}$/.test(fieldValue)) {
+                return false;
+              }
+              break;
+            default:
+              // For other fields, no additional validation
+              break;
+          }
         }
 
-        return true; // All required fields are filled
+        return true; // All required fields are filled and validated
       }
 
-      function displayMessage(message) {
-        $("#message").fadeIn();
-        $("#message").text(message);
-      }
 
       // Block UI on ajaxStart
       $(document).ajaxStart(function () {
