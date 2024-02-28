@@ -2,6 +2,7 @@ const express = require("express");
 const fetch = require("node-fetch");
 const bodyParser = require("body-parser");
 const braintree = require("braintree");
+const { saveToDatabase } = require("./saveTrx");
 
 require("dotenv").config();
 
@@ -232,14 +233,22 @@ app.post("/api/payment", async (req, res) => {
     try {
       if (isAmex && orderDetails.currency_code !== "USD") {
         // If AMEX card and not in USD, return an error
-        res.status(400).json({
-          error: "AMEX is only possible to use for USD transactions.",
-        });
+        res.status(400).send("AMEX is only possible to use for USD transactions.");
       } else if (isAmex || isSupportedCurrency) {
+
         const paypalResponse = await usePayPalPayment(req, res);
+
+        // save information locally to /database/db.json
+        saveToDatabase(orderDetails);
+
         res.send(paypalResponse);
       } else {
+
         const braintreeResponse = await useBraintreePayment(req, res);
+        
+        // save information locally to /database/db.json
+        saveToDatabase(orderDetails);
+
         res.send(braintreeResponse);
       }
     } catch (error) {
@@ -330,11 +339,12 @@ async function useBraintreePayment(brreq, pgRess) {
   }
 }
 
+
 /**
  * server
  */
-const server = app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+const server = app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
 // export modules for test cases
