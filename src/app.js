@@ -252,6 +252,7 @@ app.post("/api/payment", async (req, res) => {
         res.send(braintreeResponse);
       }
     } catch (error) {
+      // save this infomation locally to /database/db.json
       console.error("Failed to process payment:", error);
       res.status(500);
       res.send(`Failed to process payment: ${error}`);
@@ -344,7 +345,7 @@ async function useBraintreePayment(brreq, pgRess) {
  * server
  */
 const server = app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port http://localhost:${port}`);
 });
 
 // export modules for test cases
